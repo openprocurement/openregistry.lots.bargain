@@ -5,10 +5,7 @@ from openregistry.lots.core.utils import (
     get_now,
 )
 from openregistry.lots.bargain.tests.fixtures import (
-    add_lot_decision,
-    add_auctions,
     check_patch_status_200,
-    add_lot_related_process,
     move_lot_to_pending,
     move_lot_to_verification
 )

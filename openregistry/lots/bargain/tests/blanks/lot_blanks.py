@@ -1,4 +1,4 @@
- # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from copy import deepcopy
 
 from openregistry.lots.core.tests.base import create_blacklist
@@ -90,7 +90,6 @@ def check_change_to_verification(self):
     auction = response.json['data'][0]
 
     auction_data = deepcopy(auction_common)
-
 
     response = self.app.get('/{}'.format(lot['id']))
     self.assertEqual(response.status, '200 OK')
@@ -255,10 +254,13 @@ def dateModified_resource(self):
     self.assertEqual(response.content_type, 'application/json')
     self.assertEqual(response.json['data']['dateModified'], dateModified)
 
-    response = self.app.patch_json('/{}'.format(resource['id']),
-        headers={'X-Access-Token': token}, params={
+    response = self.app.patch_json(
+        '/{}'.format(resource['id']),
+        headers={'X-Access-Token': token},
+        params={
             'data': {'status': 'composing'}
-    })
+        }
+    )
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(response.content_type, 'application/json')
     self.assertEqual(response.json['data']['status'], 'composing')
@@ -293,7 +295,6 @@ def simple_patch(self):
     lot = add_lot_related_process(self, lot['id'], access_header)
     add_auctions(self, lot, access_header)
     check_patch_status_200(self, '/{}'.format(lot['id']), 'verification', access_header)
-
 
     self.app.authorization = ('Basic', ('concierge', ''))
     add_decisions(self, lot)
@@ -344,7 +345,6 @@ def change_draft_lot(self):
     for status in STATUS_BLACKLIST['draft']['lot_owner']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status, access_header)
 
-
     self.app.authorization = ('Basic', ('concierge', ''))
 
     # Create lot in 'draft' status
@@ -373,7 +373,6 @@ def change_draft_lot(self):
     for status in STATUS_BLACKLIST['draft']['chronograph']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
 
-
     self.app.authorization = ('Basic', ('convoy', ''))
 
     # Create lot in 'draft' status
@@ -387,7 +386,6 @@ def change_draft_lot(self):
     # Move from 'draft' to one of 'blacklist' status
     for status in STATUS_BLACKLIST['draft']['convoy']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
-
 
     self.app.authorization = ('Basic', ('administrator', ''))
 
@@ -453,17 +451,13 @@ def change_composing_lot(self):
     for status in STATUS_BLACKLIST['composing']['lot_owner']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status, access_header)
 
-
     self.app.authorization = ('Basic', ('concierge', ''))
     for status in STATUS_BLACKLIST['composing']['concierge']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
 
-
     self.app.authorization = ('Basic', ('chronograph', ''))
     for status in STATUS_BLACKLIST['composing']['chronograph']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
-
-
 
     self.app.authorization = ('Basic', ('broker', ''))
     add_lot_decision(self, lot['id'], access_header)
@@ -526,7 +520,6 @@ def change_verification_lot(self):
     add_decisions(self, lot)
     check_patch_status_200(self, '/{}'.format(lot['id']), 'pending', extra={'items': [test_loki_item_data]})
 
-
     self.app.authorization = ('Basic', ('broker', ''))
     response = create_single_lot(self, draft_lot)
     lot = response.json['data']
@@ -538,7 +531,6 @@ def change_verification_lot(self):
     # Move from 'verification' to 'invalid' status
     self.app.authorization = ('Basic', ('concierge', ''))
     check_patch_status_200(self, '/{}'.format(lot['id']), 'invalid')
-
 
     self.app.authorization = ('Basic', ('broker', ''))
     response = create_single_lot(self, draft_lot)
@@ -552,7 +544,6 @@ def change_verification_lot(self):
     self.app.authorization = ('Basic', ('concierge', ''))
     for status in STATUS_BLACKLIST['verification']['concierge']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
-
 
     self.app.authorization = ('Basic', ('administrator', ''))
     # Move from 'verification' to one of 'blacklist' status
@@ -577,7 +568,6 @@ def change_pending_lot(self):
     response = self.app.get('/')
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
-
 
     self.app.authorization = ('Basic', ('broker', ''))
 
@@ -611,10 +601,11 @@ def change_pending_lot(self):
     self.assertEqual(response.status, '403 Forbidden')
     self.assertEqual(response.content_type, 'application/json')
     self.assertEqual(response.json['status'], 'error')
-    self.assertEqual(response.json['errors'][0]['description'],
-                    u"You can set deleted status "
-                    u"only when lot have at least one document with \'cancellationDetails\' documentType")
-
+    self.assertEqual(
+        response.json['errors'][0]['description'],
+        u"You can set deleted status "
+        u"only when lot have at least one document with \'cancellationDetails\' documentType"
+    )
 
     # Move from 'pending' to 'deleted' status
     add_cancellationDetails_document(self, lot, access_header)
@@ -672,10 +663,11 @@ def change_pending_lot(self):
     self.assertEqual(response.status, '403 Forbidden')
     self.assertEqual(response.content_type, 'application/json')
     self.assertEqual(response.json['status'], 'error')
-    self.assertEqual(response.json['errors'][0]['description'],
-                    u"You can set deleted status "
-                    u"only when lot have at least one document with \'cancellationDetails\' documentType")
-
+    self.assertEqual(
+        response.json['errors'][0]['description'],
+        u"You can set deleted status "
+        u"only when lot have at least one document with \'cancellationDetails\' documentType"
+    )
 
     # Move from 'pending' to 'deleted'
     self.app.authorization = ('Basic', ('broker', ''))
@@ -705,7 +697,6 @@ def change_deleted_lot(self):
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
 
-
     self.app.authorization = ('Basic', ('broker', ''))
 
     lot_info = self.initial_data
@@ -730,7 +721,6 @@ def change_deleted_lot(self):
     for status in STATUS_BLACKLIST['deleted']['lot_owner']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status, access_header)
 
-
     self.app.authorization = ('Basic', ('concierge', ''))
 
     # Move from 'deleted' to one of 'blacklist' status
@@ -752,7 +742,6 @@ def change_active_salable_lot(self):
     response = self.app.get('/')
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
-
 
     self.app.authorization = ('Basic', ('broker', ''))
 
@@ -803,7 +792,6 @@ def change_active_salable_lot(self):
     for status in STATUS_BLACKLIST['active.salable']['chronograph']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
 
-
     self.app.authorization = ('Basic', ('administrator', ''))
 
     # Move from 'active.salable' to one of 'blacklist' status
@@ -828,7 +816,6 @@ def change_active_auction_lot(self):
     response = self.app.get('/')
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
-
 
     self.app.authorization = ('Basic', ('broker', ''))
 
@@ -856,7 +843,6 @@ def change_active_auction_lot(self):
     for status in STATUS_BLACKLIST['active.auction']['chronograph']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
 
-
     self.app.authorization = ('Basic', ('administrator', ''))
     check_patch_status_200(self, '/{}'.format(lot['id']), 'active.contracting')
 
@@ -872,7 +858,6 @@ def change_active_auction_lot(self):
     self.app.authorization = ('Basic', ('administrator', ''))
     check_patch_status_200(self, '/{}'.format(lot['id']), 'pending.dissolution')
 
-
     # Create new lot in 'active.auction' status
     self.app.authorization = ('Basic', ('broker', ''))
     json = create_single_lot(self, lot_info).json
@@ -881,7 +866,6 @@ def change_active_auction_lot(self):
     access_header = {'X-Access-Token': str(token)}
 
     move_lot_to_active_auction(self, lot, access_header)
-
 
     # Move from 'active.auction' to one of 'blacklist' status
     self.app.authorization = ('Basic', ('administrator', ''))
@@ -893,7 +877,6 @@ def change_active_contracting_lot(self):
     response = self.app.get('/')
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
-
 
     self.app.authorization = ('Basic', ('broker', ''))
 
@@ -921,7 +904,6 @@ def change_active_contracting_lot(self):
     for status in STATUS_BLACKLIST['active.contracting']['chronograph']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
 
-
     self.app.authorization = ('Basic', ('administrator', ''))
     check_patch_status_200(self, '/{}'.format(lot['id']), 'pending.sold')
 
@@ -937,7 +919,6 @@ def change_active_contracting_lot(self):
     self.app.authorization = ('Basic', ('administrator', ''))
     check_patch_status_200(self, '/{}'.format(lot['id']), 'pending.dissolution')
 
-
     # Create new lot in 'active.contracting' status
     self.app.authorization = ('Basic', ('broker', ''))
     json = create_single_lot(self, lot_info).json
@@ -946,7 +927,6 @@ def change_active_contracting_lot(self):
     access_header = {'X-Access-Token': str(token)}
 
     move_lot_to_active_contracting(self, lot, access_header)
-
 
     # Move from 'active.contracting' to one of 'blacklist' status
     self.app.authorization = ('Basic', ('administrator', ''))
@@ -958,7 +938,6 @@ def change_pending_sold_lot(self):
     response = self.app.get('/')
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
-
 
     self.app.authorization = ('Basic', ('broker', ''))
 
@@ -972,7 +951,6 @@ def change_pending_sold_lot(self):
 
     move_lot_to_pending_sold(self, lot, access_header)
 
-
     # Move from 'pending.sold' to one of 'blacklist' status
     self.app.authorization = ('Basic', ('broker', ''))
     for status in STATUS_BLACKLIST['pending.sold']['lot_owner']:
@@ -980,7 +958,6 @@ def change_pending_sold_lot(self):
 
     self.app.authorization = ('Basic', ('concierge', ''))
     check_patch_status_200(self, '/{}'.format(lot['id']), 'sold')
-
 
     # Create new lot in 'pending.sold' status
     self.app.authorization = ('Basic', ('broker', ''))
@@ -991,7 +968,6 @@ def change_pending_sold_lot(self):
 
     move_lot_to_pending_sold(self, lot, access_header)
 
-
     # Move from 'pending.sold' to one of 'blacklist' status
     self.app.authorization = ('Basic', ('concierge', ''))
     for status in STATUS_BLACKLIST['pending.sold']['concierge']:
@@ -1001,7 +977,6 @@ def change_pending_sold_lot(self):
     for status in STATUS_BLACKLIST['pending.sold']['chronograph']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
 
-
     self.app.authorization = ('Basic', ('administrator', ''))
     check_patch_status_200(self, '/{}'.format(lot['id']), 'sold')
 
@@ -1010,7 +985,6 @@ def change_pending_dissolution_lot(self):
     response = self.app.get('/')
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
-
 
     self.app.authorization = ('Basic', ('broker', ''))
 
@@ -1029,10 +1003,8 @@ def change_pending_dissolution_lot(self):
     for status in STATUS_BLACKLIST['pending.dissolution']['lot_owner']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status, access_header)
 
-
     self.app.authorization = ('Basic', ('concierge', ''))
     check_patch_status_200(self, '/{}'.format(lot['id']), 'dissolved')
-
 
     # Create new lot in 'pending.dissolution' status
     self.app.authorization = ('Basic', ('broker', ''))
@@ -1052,10 +1024,8 @@ def change_pending_dissolution_lot(self):
     for status in STATUS_BLACKLIST['pending.dissolution']['chronograph']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
 
-
     self.app.authorization = ('Basic', ('administrator', ''))
     check_patch_status_200(self, '/{}'.format(lot['id']), 'dissolved')
-
 
     # Create new lot in 'pending.dissolution' status
     self.app.authorization = ('Basic', ('broker', ''))
@@ -1077,7 +1047,6 @@ def change_sold_lot(self):
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
 
-
     self.app.authorization = ('Basic', ('broker', ''))
 
     lot_info = self.initial_data
@@ -1093,7 +1062,6 @@ def change_sold_lot(self):
     # Move from 'sold' to one of 'blacklist' status
     for status in STATUS_BLACKLIST['sold']['lot_owner']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status, access_header)
-
 
     self.app.authorization = ('Basic', ('concierge', ''))
 
@@ -1117,7 +1085,6 @@ def change_dissolved_lot(self):
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
 
-
     self.app.authorization = ('Basic', ('broker', ''))
 
     lot_info = self.initial_data
@@ -1134,7 +1101,6 @@ def change_dissolved_lot(self):
     for status in STATUS_BLACKLIST['dissolved']['lot_owner']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status, access_header)
 
-
     self.app.authorization = ('Basic', ('concierge', ''))
 
     # Move from 'dissolved' to one of 'blacklist' status
@@ -1144,7 +1110,6 @@ def change_dissolved_lot(self):
     self.app.authorization = ('Basic', ('chronograph', ''))
     for status in STATUS_BLACKLIST['dissolved']['chronograph']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
-
 
     self.app.authorization = ('Basic', ('administrator', ''))
 
@@ -1157,7 +1122,6 @@ def change_invalid_lot(self):
     response = self.app.get('/')
     self.assertEqual(response.status, '200 OK')
     self.assertEqual(len(response.json['data']), 0)
-
 
     self.app.authorization = ('Basic', ('broker', ''))
 
@@ -1175,7 +1139,6 @@ def change_invalid_lot(self):
     for status in STATUS_BLACKLIST['invalid']['lot_owner']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status, access_header)
 
-
     self.app.authorization = ('Basic', ('concierge', ''))
 
     # Move from 'invalid' to one of 'blacklist' status
@@ -1185,7 +1148,6 @@ def change_invalid_lot(self):
     self.app.authorization = ('Basic', ('chronograph', ''))
     for status in STATUS_BLACKLIST['invalid']['chronograph']:
         check_patch_status_403(self, '/{}'.format(lot['id']), status)
-
 
     self.app.authorization = ('Basic', ('administrator', ''))
 
@@ -1279,7 +1241,6 @@ def check_auction_status_lot_workflow(self):
 
     auction = lot['auctions'][0]
 
-
     self.app.authorization = ('Basic', ('convoy', ''))
     response = self.app.patch_json('/{}/auctions/{}'.format(lot['id'], auction['id']),
                                    params={'data': {'status': 'unsuccessful'}})
@@ -1291,7 +1252,6 @@ def check_auction_status_lot_workflow(self):
 
     self.assertEqual(response.json['data']['auctions'][0]['status'], 'unsuccessful')
     self.assertEqual(contract['status'], 'cancelled')
-
 
     # Create new lot in 'active.auction' status
     self.app.authorization = ('Basic', ('broker', ''))

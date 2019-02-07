@@ -101,7 +101,10 @@ class RelatedProcessesTestMixin(RelatedProcessesTestMixinBase):
         related_process_id = response.json['data']['id']
         self.assertEqual(response.status, '201 Created')
         self.assertIn('id', response.json['data'])
-        self.assertEqual(response.json['data']['relatedProcessID'], self.initial_related_process_data['relatedProcessID'])
+        self.assertEqual(
+            response.json['data']['relatedProcessID'],
+            self.initial_related_process_data['relatedProcessID']
+        )
         self.assertEqual(response.json['data']['type'], self.initial_related_process_data['type'])
 
         self.set_status('pending')

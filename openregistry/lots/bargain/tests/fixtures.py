@@ -1,4 +1,4 @@
- # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from copy import deepcopy
 from uuid import uuid4
 
@@ -55,7 +55,10 @@ def add_decisions(self, lot):
     self.assertEqual(response.content_type, 'application/json')
     self.assertEqual(response.json['data']['decisions'][0]['decisionOf'], 'lot')
     self.assertEqual(response.json['data']['decisions'][0]['id'], data_with_decisions['decisions'][0]['id'])
-    self.assertEqual(response.json['data']['decisions'][0]['decisionID'], data_with_decisions['decisions'][0]['decisionID'])
+    self.assertEqual(
+        response.json['data']['decisions'][0]['decisionID'],
+        data_with_decisions['decisions'][0]['decisionID']
+    )
     self.assertNotIn('relatedItem', response.json['data']['decisions'][0])
 
     self.assertEqual(response.json['data']['decisions'][1]['decisionOf'], 'asset')
@@ -229,9 +232,9 @@ def move_lot_to_pending(test_case, lot, access_header):
     test_case.app.authorization = ('Basic', ('concierge', ''))
     add_decisions(test_case, lot)
     check_patch_status_200(
-        test_case, 
-        '/{}'.format(lot['id']), 
-        'pending', 
+        test_case,
+        '/{}'.format(lot['id']),
+        'pending',
         extra={'items': [test_loki_item_data]}
     )
 
