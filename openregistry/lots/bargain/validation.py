@@ -154,10 +154,10 @@ def validate_verification_status(request, error_handler):
         # Decision validation
         if not any(decision.decisionOf == 'lot' for decision in request.context.decisions):
             raise_operation_error(
-                        request,
-                        error_handler,
-                        'Can\'t switch to verification while lot decisions not available.'
-                    )
+                request,
+                error_handler,
+                'Can\'t switch to verification while lot decisions not available.'
+            )
 
         # Auction validation
         lot = request.validated['lot']

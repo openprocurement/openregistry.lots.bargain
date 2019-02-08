@@ -168,11 +168,11 @@ def patch_decisions_with_lot_by_broker(self):
 
 def create_decisions_with_lot(self):
     data = deepcopy(self.initial_data)
-    decision_1 = {'id': '1' * 32,  'decisionID': 'decID',  'decisionDate': get_now().isoformat()}
+    decision_1 = {'id': '1' * 32, 'decisionID': 'decID', 'decisionDate': get_now().isoformat()}
     decision_2 = deepcopy(decision_1)
     decision_2['id'] = '2' * 32
     data['decisions'] = [
-       decision_1, decision_2
+        decision_1, decision_2
     ]
     response = self.app.post_json('/', params={'data': data})
     decision_1['decisionOf'] = 'lot'
@@ -187,7 +187,7 @@ def create_decisions_with_lot(self):
 
     decision_2['id'] = '1' * 32
     data['decisions'] = [
-       decision_1, decision_2
+        decision_1, decision_2
     ]
     response = self.app.post_json('/', params={'data': data}, status=422)
     self.assertEqual(response.status, '422 Unprocessable Entity')
