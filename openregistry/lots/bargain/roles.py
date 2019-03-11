@@ -70,6 +70,11 @@ contracts_roles = {
     'convoy': blacklist('id', 'type'),
 }
 
+concierge_edit_role = whitelist(
+    'status', 'decisions', 'title', 'title_ru', 'title_en',
+    'lotCustodian', 'description', 'description_ru', 'description_en',
+    'lotHolder', 'items'
+)
 
 lot_roles = {
     'create': lot_create_role,
@@ -122,7 +127,7 @@ lot_roles = {
     'edit.sold': whitelist(),
     'invalid': view_role,
     'edit.invalid': whitelist(),
-    'concierge': whitelist('status', 'decisions', 'title', 'lotCustodian', 'description', 'lotHolder', 'items'),
+    'concierge': concierge_edit_role,
     'chronograph': whitelist(),
     'caravan': whitelist(),
     'convoy': whitelist()
